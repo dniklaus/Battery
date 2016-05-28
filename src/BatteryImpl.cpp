@@ -65,7 +65,7 @@ const float BatteryImpl::s_BATT_STOP_THRSHD = 6.5;
 const float BatteryImpl::s_BATT_SHUT_THRSHD = 6.1;
 const float BatteryImpl::s_BATT_HYST        = 0.2;
 
-const unsigned int BatteryImpl::s_V_ADC_FULLRANGE = 5;
+const unsigned int BatteryImpl::s_V_ADC_FULLRANGE = 1;
 const unsigned int BatteryImpl::s_N_ADC_FULLRANGE = 1023;
 
 
