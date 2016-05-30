@@ -23,6 +23,11 @@ BatteryVoltageEvalFsm::~BatteryVoltageEvalFsm()
   m_battImpl = 0;
 }
 
+void BatteryVoltageEvalFsm::attachAdapter(BatteryAdapter* adapter)
+{
+  m_adapter = adapter;
+}
+
 BatteryVoltageEvalFsmState* BatteryVoltageEvalFsm::state()
 {
   return m_state;

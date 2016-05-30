@@ -18,6 +18,8 @@ public:
   BatteryVoltageEvalFsm(BatteryImpl* battImpl);
   virtual ~BatteryVoltageEvalFsm();
 
+  void attachAdapter(BatteryAdapter* adapter);
+
   /**
    *
    */
