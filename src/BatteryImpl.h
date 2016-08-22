@@ -97,9 +97,9 @@ private:
   float m_battVoltageSenseFactor;
 
   float m_battWarnThreshd;           /// Battery Voltage Warn Threshold [V]
-  float m_battStopThrshd;            /// Battery Voltage Stop Actors Threshold[V]
-  float m_battShutThrshd;            /// Battery Voltage Shutdown Threshold[V]
-  float m_battHyst;                  /// Battery Voltage Hysteresis around Threshold levels[V]
+  float m_battStopThrshd;            /// Battery Voltage Stop Actors Threshold [V]
+  float m_battShutThrshd;            /// Battery Voltage Shutdown Threshold [V]
+  float m_battHyst;                  /// Battery Voltage Hysteresis around Threshold levels [V]
 
 
   static const unsigned int s_DEFAULT_STARTUP_TIME; /// [ms]
