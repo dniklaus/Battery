@@ -36,6 +36,16 @@ class BatteryImpl;
 
 //-----------------------------------------------------------------------------
 
+struct BatteryThresholdConfig
+{
+  float battWarnThreshd;           /// Battery Voltage Warn Threshold [V]
+  float battStopThrshd;            /// Battery Voltage Stop Actors Threshold[V]
+  float battShutThrshd;            /// Battery Voltage Shutdown Threshold[V]
+  float battHyst;                  /// Battery Voltage Hysteresis around Threshold levels[V]
+};
+
+//-----------------------------------------------------------------------------
+
 class Battery
 {
 public:
@@ -43,7 +53,7 @@ public:
    * Constructor.
    * @param adapter Pointer to a specific BatteryAdapter object, default: 0 (none)
    */
-  Battery(BatteryAdapter* adapter = 0);
+  Battery(BatteryAdapter* adapter = 0, BatteryThresholdConfig batteryThresholdConfig = {Battery::s_BATT_WARN_THRSHD, Battery::s_BATT_STOP_THRSHD, Battery::s_BATT_SHUT_THRSHD, Battery::s_BATT_HYST});
 
   /**
    * Destructor.
@@ -101,6 +111,11 @@ public:
    * @return true, if voltage is below the shutdown threshold level, false otherwise.
    */
   bool isBattVoltageBelowShutdownThreshold();
+
+  static const float s_BATT_WARN_THRSHD;            /// default Battery Voltage Warn Threshold [V]
+  static const float s_BATT_STOP_THRSHD;            /// default Battery Voltage Stop Actors Threshold [V]
+  static const float s_BATT_SHUT_THRSHD;            /// default Battery Voltage Shutdown Threshold [V]
+  static const float s_BATT_HYST;                   /// default Battery Voltage Hysteresis around Threshold levels [V]
 
 private:
   BatteryImpl* m_impl;  /// Pointer to the private implementation of the Battery component object.

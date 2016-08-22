@@ -8,6 +8,7 @@
 #ifndef BATTERYIMPL_H_
 #define BATTERYIMPL_H_
 
+#include "Battery.h"
 class Timer;
 class BatteryAdapter;
 class BatteryVoltageEvalFsm;
@@ -19,7 +20,7 @@ public:
    * Constructor.
    * @param adapter Pointer to a specific BatteryAdapter object.
    */
-  BatteryImpl(BatteryAdapter* adapter);
+  BatteryImpl(BatteryAdapter* adapter, BatteryThresholdConfig batteryThresholdConfig);
 
   /**
    * Destructor.
@@ -95,18 +96,17 @@ private:
   float m_batteryVoltage;
   float m_battVoltageSenseFactor;
 
+  float m_battWarnThreshd;           /// Battery Voltage Warn Threshold [V]
+  float m_battStopThrshd;            /// Battery Voltage Stop Actors Threshold[V]
+  float m_battShutThrshd;            /// Battery Voltage Shutdown Threshold[V]
+  float m_battHyst;                  /// Battery Voltage Hysteresis around Threshold levels[V]
+
+
   static const unsigned int s_DEFAULT_STARTUP_TIME; /// [ms]
   static const unsigned int s_DEFAULT_POLL_TIME;    /// [ms]
 
   static const unsigned int s_V_ADC_FULLRANGE;      /// [V]
   static const unsigned int s_N_ADC_FULLRANGE;      /// [1]
-
-public:
-  static const float s_BATT_WARN_THRSHD;            /// [V]
-  static const float s_BATT_STOP_THRSHD;            /// [V]
-  static const float s_BATT_SHUT_THRSHD;            /// [V]
-  static const float s_BATT_HYST;                   /// [V]
-
 
 private: // forbidden default functions
   BatteryImpl& operator = (const BatteryImpl& src); // assignment operator

@@ -60,22 +60,21 @@ public:
 const unsigned int BatteryImpl::s_DEFAULT_STARTUP_TIME = 500;
 const unsigned int BatteryImpl::s_DEFAULT_POLL_TIME = 1000;
 
-const float BatteryImpl::s_BATT_WARN_THRSHD = 7.5;
-const float BatteryImpl::s_BATT_STOP_THRSHD = 6.5;
-const float BatteryImpl::s_BATT_SHUT_THRSHD = 6.1;
-const float BatteryImpl::s_BATT_HYST        = 0.3;
-
 const unsigned int BatteryImpl::s_V_ADC_FULLRANGE = 1;
 const unsigned int BatteryImpl::s_N_ADC_FULLRANGE = 1023;
 
 
-BatteryImpl::BatteryImpl(BatteryAdapter* adapter)
+BatteryImpl::BatteryImpl(BatteryAdapter* adapter, BatteryThresholdConfig batteryThresholdConfig)
 : m_adapter(adapter)
 , m_evalFsm(new BatteryVoltageEvalFsm(this))
 , m_startupTimer(new Timer(new BattStartupTimerAdapter(this), Timer::IS_NON_RECURRING, s_DEFAULT_STARTUP_TIME))
 , m_pollTimer(new Timer(new BattPollTimerAdapter(this), Timer::IS_RECURRING))
 , m_batteryVoltage(0.0)
 , m_battVoltageSenseFactor(2.0)
+, m_battWarnThreshd(batteryThresholdConfig.battWarnThreshd)
+, m_battStopThrshd(batteryThresholdConfig.battStopThrshd)
+, m_battShutThrshd(batteryThresholdConfig.battShutThrshd)
+, m_battHyst(batteryThresholdConfig.battHyst)
 { }
 
 BatteryImpl::~BatteryImpl()

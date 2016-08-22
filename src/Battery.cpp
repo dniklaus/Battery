@@ -5,11 +5,17 @@
  *      Author: niklausd
  */
 
-#include "../Battery.h"
+#include "Battery.h"
 #include "BatteryImpl.h"
 
-Battery::Battery(BatteryAdapter* adapter)
-: m_impl(new BatteryImpl(adapter))
+const float Battery::s_BATT_WARN_THRSHD = 7.5;
+const float Battery::s_BATT_STOP_THRSHD = 6.5;
+const float Battery::s_BATT_SHUT_THRSHD = 6.1;
+const float Battery::s_BATT_HYST        = 0.3;
+
+
+Battery::Battery(BatteryAdapter* adapter, BatteryThresholdConfig batteryThresholdConfig)
+: m_impl(new BatteryImpl(adapter, batteryThresholdConfig))
 { }
 
 Battery::~Battery()
