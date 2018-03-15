@@ -105,9 +105,6 @@ private:
   static const unsigned int s_DEFAULT_STARTUP_TIME; /// [ms]
   static const unsigned int s_DEFAULT_POLL_TIME;    /// [ms]
 
-  static const unsigned int s_V_ADC_FULLRANGE;      /// [V]
-  static const unsigned int s_N_ADC_FULLRANGE;      /// [1]
-
 private: // forbidden default functions
   BatteryImpl& operator = (const BatteryImpl& src); // assignment operator
   BatteryImpl(const BatteryImpl& src);              // copy constructor

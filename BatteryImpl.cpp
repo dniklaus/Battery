@@ -60,10 +60,6 @@ public:
 const unsigned int BatteryImpl::s_DEFAULT_STARTUP_TIME = 500;
 const unsigned int BatteryImpl::s_DEFAULT_POLL_TIME = 1000;
 
-const unsigned int BatteryImpl::s_V_ADC_FULLRANGE = 1;
-const unsigned int BatteryImpl::s_N_ADC_FULLRANGE = 1023;
-
-
 BatteryImpl::BatteryImpl(BatteryAdapter* adapter, BatteryThresholdConfig batteryThresholdConfig)
 : m_adapter(adapter)
 , m_evalFsm(new BatteryVoltageEvalFsm(this))
@@ -114,7 +110,7 @@ void BatteryImpl::evaluateStatus()
 {
   if ((0 != m_adapter) && (0 != m_evalFsm))
   {
-    float batteryVoltage = m_adapter->readRawBattSenseValue() * m_battVoltageSenseFactor * s_V_ADC_FULLRANGE / s_N_ADC_FULLRANGE;
+    float batteryVoltage = m_adapter->readRawBattSenseValue() * m_battVoltageSenseFactor * adapter()->getVAdcFullrange() / adapter()->getNAdcFullrange();
     m_batteryVoltage = batteryVoltage;
     // Serial.print("BatteryImpl::evaluateStatus(), m_batteryVoltage = ");
     // Serial.print(m_batteryVoltage);

@@ -12,6 +12,21 @@
 
 class BatteryAdapter
 {
+private:
+#if defined (__arm__) && defined (__SAM3X8E__) // Arduino Due
+  const float s_V_ADC_FULLRANGE = 3.3;
+  const unsigned int s_N_ADC_FULLRANGE = 1023;
+#elif defined (ARDUINO_ARCH_SAMD) && defined (__SAMD21G18A__) // Adafruit Feather M0
+  const float s_V_ADC_FULLRANGE = 3.3;
+  const unsigned int s_N_ADC_FULLRANGE = 1023;
+#elif defined (__AVR__)
+  const float s_V_ADC_FULLRANGE = 5;
+  const unsigned int s_N_ADC_FULLRANGE = 1023;
+#elif defined ESP8266
+  const float s_V_ADC_FULLRANGE = 1;
+  const unsigned int s_N_ADC_FULLRANGE = 1023;
+#endif
+
 public:
   virtual void notifyBattVoltageOk()                      { }
   virtual void notifyBattVoltageBelowWarnThreshold()      { }
@@ -19,6 +34,16 @@ public:
   virtual void notifyBattVoltageBelowShutdownThreshold()  { }
   virtual float readBattVoltageSenseFactor()              = 0;
   virtual unsigned int readRawBattSenseValue()            = 0;
+
+  virtual float getVAdcFullrange()
+  {
+    return s_V_ADC_FULLRANGE;
+  }
+
+  virtual unsigned int getNAdcFullrange()
+  {
+    return s_N_ADC_FULLRANGE;
+  }
 
   virtual ~BatteryAdapter() { }
 
