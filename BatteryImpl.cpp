@@ -8,6 +8,8 @@
 // #include "Arduino.h"
 
 #include "Timer.h"
+#include <DbgTracePort.h>
+#include <DbgTraceLevel.h>
 #include "Battery.h"
 #include "BatteryVoltageEvalFsm.h"
 #include "BatteryImpl.h"
@@ -65,6 +67,7 @@ BatteryImpl::BatteryImpl(BatteryAdapter* adapter, BatteryThresholdConfig battery
 , m_evalFsm(new BatteryVoltageEvalFsm(this))
 , m_startupTimer(new Timer(new BattStartupTimerAdapter(this), Timer::IS_NON_RECURRING, s_DEFAULT_STARTUP_TIME))
 , m_pollTimer(new Timer(new BattPollTimerAdapter(this), Timer::IS_RECURRING))
+, m_trPort(new DbgTrace_Port("batt", DbgTrace_Level::info))
 , m_batteryVoltage(0.0)
 , m_battVoltageSenseFactor(2.0)
 , m_battWarnThreshd(batteryThresholdConfig.battWarnThreshd)
@@ -90,6 +93,7 @@ void BatteryImpl::attachAdapter(BatteryAdapter* adapter)
 {
   m_adapter = adapter;
   m_evalFsm->attachAdapter(m_adapter);
+  battVoltageSensFactorChanged();
 }
 
 BatteryAdapter* BatteryImpl::adapter()
@@ -110,11 +114,12 @@ void BatteryImpl::evaluateStatus()
 {
   if ((0 != m_adapter) && (0 != m_evalFsm))
   {
-    float batteryVoltage = m_adapter->readRawBattSenseValue() * m_battVoltageSenseFactor * adapter()->getVAdcFullrange() / adapter()->getNAdcFullrange();
-    m_batteryVoltage = batteryVoltage;
-    // Serial.print("BatteryImpl::evaluateStatus(), m_batteryVoltage = ");
-    // Serial.print(m_batteryVoltage);
-    // Serial.println(" V");
+    m_batteryVoltage = m_adapter->readRawBattSenseValue() * m_battVoltageSenseFactor * adapter()->getVAdcFullrange() / adapter()->getNAdcFullrange();
+    char buf[200];
+    sprintf(buf, "evaluateStatus(), rawVal: %d, factor: %d thds, VFull: %dmV, NFull: %d, m_batteryVoltage = %dmV",
+                  m_adapter->readRawBattSenseValue(), static_cast<int>(m_battVoltageSenseFactor*1000),
+                  static_cast<int>(adapter()->getVAdcFullrange()*1000), adapter()->getNAdcFullrange(), static_cast<int>(m_batteryVoltage*1000));
+    TR_PRINTF(m_trPort, DbgTrace_Level::debug, "%s", buf);
     m_evalFsm->evaluateStatus();
   }
 }
@@ -188,4 +193,9 @@ const char* BatteryImpl::getPreviousStateName()
     return "BatteryImpl::m_evalFsm, null pointer exception";
   }
   return m_evalFsm->previousState()->toString();
+}
+
+DbgTrace_Port* BatteryImpl::trPort()
+{
+  return m_trPort;
 }

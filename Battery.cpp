@@ -7,12 +7,61 @@
 
 #include "Battery.h"
 #include "BatteryImpl.h"
+#include <DbgTracePort.h>
+#include <DbgTraceLevel.h>
 
 const float Battery::s_BATT_WARN_THRSHD = 7.5;
 const float Battery::s_BATT_STOP_THRSHD = 6.5;
 const float Battery::s_BATT_SHUT_THRSHD = 6.1;
 const float Battery::s_BATT_HYST        = 0.3;
 
+void BatteryAdapter::notifyBattVoltageOk()
+{
+  if (0 != m_trPort)
+  {
+    TR_PRINTF(m_trPort, DbgTrace_Level::debug, "BatteryAdapter::notifyBattVoltageOk()");
+  }
+}
+
+void BatteryAdapter::notifyBattVoltageBelowWarnThreshold()
+{
+  if (0 != m_trPort)
+  {
+    TR_PRINTF(m_trPort, DbgTrace_Level::debug, "BatteryAdapter::notifyBattVoltageBelowWarnThreshold()");
+  }
+}
+
+void BatteryAdapter::notifyBattVoltageBelowStopThreshold()
+{
+  if (0 != m_trPort)
+  {
+    TR_PRINTF(m_trPort, DbgTrace_Level::debug, "BatteryAdapter::notifyBattVoltageBelowStopThreshold()");
+  }
+}
+
+void BatteryAdapter::notifyBattVoltageBelowShutdownThreshold()
+{
+  if (0 != m_trPort)
+  {
+    TR_PRINTF(m_trPort, DbgTrace_Level::debug, "BatteryAdapter::notifyBattVoltageBelowShutdownThreshold()");
+  }
+}
+
+float BatteryAdapter::readBattVoltageSenseFactor()
+{
+  return 2.0;
+}
+
+void BatteryAdapter::attachBattery(Battery* battery)
+{
+  m_battery = battery;
+  if (0 != battery)
+  {
+    m_trPort = battery->trPort();
+  }
+}
+
+//-----------------------------------------------------------------------------
 
 Battery::Battery(BatteryAdapter* adapter, BatteryThresholdConfig batteryThresholdConfig)
 : m_impl(new BatteryImpl(adapter, batteryThresholdConfig))
@@ -117,3 +166,14 @@ bool Battery::isBattVoltageBelowShutdownThreshold()
   }
   return isVoltageBelowShutdownThreshold;
 }
+
+DbgTrace_Port* Battery::trPort()
+{
+  DbgTrace_Port* trPort = 0;
+  if (0 != m_impl)
+  {
+    trPort = m_impl->trPort();
+  }
+  return trPort;
+}
+

@@ -10,6 +10,9 @@
 
 //-----------------------------------------------------------------------------
 
+class DbgTrace_Port;
+class Battery;
+
 class BatteryAdapter
 {
 private:
@@ -20,19 +23,23 @@ private:
   const float s_V_ADC_FULLRANGE = 3.3;
   const unsigned int s_N_ADC_FULLRANGE = 1023;
 #elif defined (__AVR__)
-  const float s_V_ADC_FULLRANGE = 5;
+  const float s_V_ADC_FULLRANGE = 5.0;
   const unsigned int s_N_ADC_FULLRANGE = 1023;
 #elif defined ESP8266
-  const float s_V_ADC_FULLRANGE = 1;
+  const float s_V_ADC_FULLRANGE = 1.0;
   const unsigned int s_N_ADC_FULLRANGE = 1023;
 #endif
 
+  Battery* m_battery;
+  DbgTrace_Port* m_trPort;
+
 public:
-  virtual void notifyBattVoltageOk()                      { }
-  virtual void notifyBattVoltageBelowWarnThreshold()      { }
-  virtual void notifyBattVoltageBelowStopThreshold()      { }
-  virtual void notifyBattVoltageBelowShutdownThreshold()  { }
-  virtual float readBattVoltageSenseFactor()              = 0;
+  virtual void notifyBattVoltageOk();
+  virtual void notifyBattVoltageBelowWarnThreshold();
+  virtual void notifyBattVoltageBelowStopThreshold();
+  virtual void notifyBattVoltageBelowShutdownThreshold();
+  virtual float readBattVoltageSenseFactor();
+
   virtual unsigned int readRawBattSenseValue()            = 0;
 
   virtual float getVAdcFullrange()
@@ -47,8 +54,10 @@ public:
 
   virtual ~BatteryAdapter() { }
 
+  void attachBattery(Battery* battery);
+
 protected:
-  BatteryAdapter() { }
+  BatteryAdapter() : m_battery(0), m_trPort(0) { }
 
 private:  // forbidden default functions
   BatteryAdapter& operator = (const BatteryAdapter& src); // assignment operator
@@ -100,6 +109,7 @@ public:
   const char* getCurrentStateName();
   const char* getPreviousStateName();
 
+  DbgTrace_Port* trPort();
 
   /**
    * Notify Battery Voltage Sense Factor has changed in the Inventory Management Data.

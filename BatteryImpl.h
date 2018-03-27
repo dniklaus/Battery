@@ -9,9 +9,11 @@
 #define BATTERYIMPL_H_
 
 #include "Battery.h"
+
 class Timer;
 class BatteryAdapter;
 class BatteryVoltageEvalFsm;
+class DbgTrace_Port;
 
 class BatteryImpl
 {
@@ -88,13 +90,19 @@ public:
   const char* getCurrentStateName();
   const char* getPreviousStateName();
 
+  DbgTrace_Port* trPort();
+
 private:
   BatteryAdapter* m_adapter;  /// Pointer to the currently attached specific BatteryAdapter object
   BatteryVoltageEvalFsm* m_evalFsm;
   Timer* m_startupTimer;
   Timer* m_pollTimer;
+  DbgTrace_Port* m_trPort;
+
   float m_batteryVoltage;
   float m_battVoltageSenseFactor;
+
+
 
   float m_battWarnThreshd;           /// Battery Voltage Warn Threshold [V]
   float m_battStopThrshd;            /// Battery Voltage Stop Actors Threshold [V]
