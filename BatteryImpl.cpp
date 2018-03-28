@@ -60,7 +60,7 @@ public:
 //-----------------------------------------------------------------------------
 
 const unsigned int BatteryImpl::s_DEFAULT_STARTUP_TIME = 500;
-const unsigned int BatteryImpl::s_DEFAULT_POLL_TIME = 1000;
+const unsigned int BatteryImpl::s_DEFAULT_POLL_TIME = 5000;
 
 BatteryImpl::BatteryImpl(BatteryAdapter* adapter, BatteryThresholdConfig batteryThresholdConfig)
 : m_adapter(adapter)
