@@ -38,6 +38,7 @@ public:
   virtual void notifyBattVoltageBelowWarnThreshold();
   virtual void notifyBattVoltageBelowStopThreshold();
   virtual void notifyBattVoltageBelowShutdownThreshold();
+  virtual void notifyBattStateAnyChange();
   virtual float readBattVoltageSenseFactor();
 
   virtual unsigned int readRawBattSenseValue()            = 0;
@@ -55,9 +56,10 @@ public:
   virtual ~BatteryAdapter() { }
 
   void attachBattery(Battery* battery);
+  Battery* battery();
 
 protected:
-  BatteryAdapter() : m_battery(0), m_trPort(0) { }
+  BatteryAdapter();
 
 private:  // forbidden default functions
   BatteryAdapter& operator = (const BatteryAdapter& src); // assignment operator

@@ -15,6 +15,25 @@ const float Battery::s_BATT_STOP_THRSHD = 6.5;
 const float Battery::s_BATT_SHUT_THRSHD = 6.1;
 const float Battery::s_BATT_HYST        = 0.3;
 
+BatteryAdapter::BatteryAdapter()
+: m_battery(0)
+, m_trPort(0)
+{ }
+
+void BatteryAdapter::attachBattery(Battery* battery)
+{
+  m_battery = battery;
+  if (0 != m_battery)
+  {
+    m_trPort = m_battery->trPort();
+  }
+}
+
+Battery* BatteryAdapter::battery()
+{
+  return m_battery;
+}
+
 void BatteryAdapter::notifyBattVoltageOk()
 {
   if (0 != m_trPort)
@@ -47,30 +66,35 @@ void BatteryAdapter::notifyBattVoltageBelowShutdownThreshold()
   }
 }
 
+void BatteryAdapter::notifyBattStateAnyChange()
+{
+  if ((0 != m_trPort) && (0 != m_battery))
+  {
+    TR_PRINTF(m_trPort, DbgTrace_Level::info, "BatteryAdapter::notifyBattStateAnyChange(), %d [mV], %s",
+              m_battery->getBatteryVoltage() * 1000, m_battery->isBattVoltageOk() ? "ok" : "/!\\");
+  }
+}
+
 float BatteryAdapter::readBattVoltageSenseFactor()
 {
   return 2.0;
-}
-
-void BatteryAdapter::attachBattery(Battery* battery)
-{
-  m_battery = battery;
-  if (0 != battery)
-  {
-    m_trPort = battery->trPort();
-  }
 }
 
 //-----------------------------------------------------------------------------
 
 Battery::Battery(BatteryAdapter* adapter, BatteryThresholdConfig batteryThresholdConfig)
 : m_impl(new BatteryImpl(adapter, batteryThresholdConfig))
-{ }
+{
+  if (0 != adapter)
+  {
+    adapter->attachBattery(this);
+  }
+}
 
 Battery::~Battery()
 {
-  delete adapter();
-  delete m_impl; m_impl = 0;
+  delete m_impl;
+  m_impl = 0;
 }
 
 void Battery::attachAdapter(BatteryAdapter* adapter)
@@ -78,6 +102,11 @@ void Battery::attachAdapter(BatteryAdapter* adapter)
   if (0 != m_impl)
   {
     m_impl->attachAdapter(adapter);
+  }
+
+  if (0 != adapter)
+  {
+    adapter->attachBattery(this);
   }
 }
 
