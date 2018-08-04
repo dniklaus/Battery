@@ -38,40 +38,46 @@ void BatteryAdapter::notifyBattVoltageOk()
 {
   if (0 != m_trPort)
   {
-    TR_PRINTF(m_trPort, DbgTrace_Level::debug, "BatteryAdapter::notifyBattVoltageOk()");
+    TR_PRINTF(m_trPort, DbgTrace_Level::info, "BatteryAdapter::notifyBattVoltageOk()");
   }
+  notifyBattStateAnyChange();
 }
 
 void BatteryAdapter::notifyBattVoltageBelowWarnThreshold()
 {
   if (0 != m_trPort)
   {
-    TR_PRINTF(m_trPort, DbgTrace_Level::debug, "BatteryAdapter::notifyBattVoltageBelowWarnThreshold()");
+    TR_PRINTF(m_trPort, DbgTrace_Level::info, "BatteryAdapter::notifyBattVoltageBelowWarnThreshold()");
   }
+  notifyBattStateAnyChange();
 }
 
 void BatteryAdapter::notifyBattVoltageBelowStopThreshold()
 {
   if (0 != m_trPort)
   {
-    TR_PRINTF(m_trPort, DbgTrace_Level::debug, "BatteryAdapter::notifyBattVoltageBelowStopThreshold()");
+    TR_PRINTF(m_trPort, DbgTrace_Level::info, "BatteryAdapter::notifyBattVoltageBelowStopThreshold()");
   }
+  notifyBattStateAnyChange();
 }
 
 void BatteryAdapter::notifyBattVoltageBelowShutdownThreshold()
 {
   if (0 != m_trPort)
   {
-    TR_PRINTF(m_trPort, DbgTrace_Level::debug, "BatteryAdapter::notifyBattVoltageBelowShutdownThreshold()");
+    TR_PRINTF(m_trPort, DbgTrace_Level::info, "BatteryAdapter::notifyBattVoltageBelowShutdownThreshold()");
   }
+  notifyBattStateAnyChange();
 }
 
 void BatteryAdapter::notifyBattStateAnyChange()
 {
   if ((0 != m_trPort) && (0 != m_battery))
   {
-    TR_PRINTF(m_trPort, DbgTrace_Level::info, "BatteryAdapter::notifyBattStateAnyChange(), %d [mV], %s",
-              m_battery->getBatteryVoltage() * 1000, m_battery->isBattVoltageOk() ? "ok" : "/!\\");
+    TR_PRINTF(m_trPort, DbgTrace_Level::notice, "BatteryAdapter::notifyBattStateAnyChange(), %d.%02dV, %s",
+              static_cast<int>(m_battery->getBatteryVoltage()),
+              static_cast<int>(m_battery->getBatteryVoltage()*100.0)-static_cast<int>(m_battery->getBatteryVoltage())*100,
+              m_battery->isBattVoltageOk() ? "ok" : "/!\\");
   }
 }
 

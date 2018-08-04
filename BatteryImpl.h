@@ -92,6 +92,11 @@ public:
 
   DbgTrace_Port* trPort();
 
+  float battWarnThreshd();           /// Battery Voltage Warn Threshold [V]
+  float battStopThrshd();            /// Battery Voltage Stop Actors Threshold[V]
+  float battShutThrshd();            /// Battery Voltage Shutdown Threshold[V]
+  float battHyst();                  /// Battery Voltage Hysteresis around Threshold levels[V]
+
 private:
   BatteryAdapter* m_adapter;  /// Pointer to the currently attached specific BatteryAdapter object
   BatteryVoltageEvalFsm* m_evalFsm;

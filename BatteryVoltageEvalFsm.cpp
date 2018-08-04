@@ -95,7 +95,7 @@ bool BatteryVoltageEvalFsm::isGuardWarn()
   bool isGuard = false;
   if (0 != m_battImpl)
   {
-    isGuard = (Battery::s_BATT_WARN_THRSHD > m_battImpl->getBatteryVoltage());
+    isGuard = (m_battImpl->battWarnThreshd() > m_battImpl->getBatteryVoltage());
   }
   return isGuard;
 }
@@ -105,7 +105,7 @@ bool BatteryVoltageEvalFsm::isGuardStop()
   bool isGuard = false;
   if (0 != m_battImpl)
   {
-    isGuard = (Battery::s_BATT_STOP_THRSHD > m_battImpl->getBatteryVoltage());
+    isGuard = (m_battImpl->battStopThrshd() > m_battImpl->getBatteryVoltage());
   }
   return isGuard;
 }
@@ -115,7 +115,7 @@ bool BatteryVoltageEvalFsm::isGuardShut()
   bool isGuard = false;
   if (0 != m_battImpl)
   {
-    isGuard = (Battery::s_BATT_SHUT_THRSHD> m_battImpl->getBatteryVoltage());
+    isGuard = (m_battImpl->battShutThrshd() > m_battImpl->getBatteryVoltage());
   }
   return isGuard;
 }
@@ -125,7 +125,7 @@ bool BatteryVoltageEvalFsm::isGuardWarnPlusHyst()
   bool isGuard = false;
   if (0 != m_battImpl)
   {
-    isGuard = ((Battery::s_BATT_WARN_THRSHD + Battery::s_BATT_HYST) < m_battImpl->getBatteryVoltage());
+    isGuard = ((m_battImpl->battWarnThreshd() + m_battImpl->battHyst()) < m_battImpl->getBatteryVoltage());
   }
   return isGuard;
 }
@@ -135,7 +135,7 @@ bool BatteryVoltageEvalFsm::isGuardStopPlusHyst()
   bool isGuard = false;
   if (0 != m_battImpl)
   {
-    isGuard = ((Battery::s_BATT_STOP_THRSHD + Battery::s_BATT_HYST) < m_battImpl->getBatteryVoltage());
+    isGuard = ((m_battImpl->battStopThrshd() + m_battImpl->battHyst()) < m_battImpl->getBatteryVoltage());
   }
   return isGuard;
 }
@@ -145,7 +145,7 @@ bool BatteryVoltageEvalFsm::isGuardShutPlusHyst()
   bool isGuard = false;
   if (0 != m_battImpl)
   {
-    isGuard = ((Battery::s_BATT_SHUT_THRSHD + Battery::s_BATT_HYST) < m_battImpl->getBatteryVoltage());
+    isGuard = ((m_battImpl->battShutThrshd() + m_battImpl->battHyst()) < m_battImpl->getBatteryVoltage());
   }
   return isGuard;
 }
