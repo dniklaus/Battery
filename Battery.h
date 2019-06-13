@@ -10,7 +10,7 @@
 
 //-----------------------------------------------------------------------------
 
-class DbgTrace_Port;
+//class DbgTrace_Port;
 class Battery;
 
 class BatteryAdapter
@@ -28,10 +28,13 @@ private:
 #elif defined ESP8266
   const float s_V_ADC_FULLRANGE = 1.0;
   const unsigned int s_N_ADC_FULLRANGE = 1023;
+#else
+  const float s_V_ADC_FULLRANGE = 3.1;
+  const unsigned int s_N_ADC_FULLRANGE = 4096;
 #endif
 
   Battery* m_battery;
-  DbgTrace_Port* m_trPort;
+//  DbgTrace_Port* m_trPort;
 
 public:
   virtual void notifyBattVoltageOk();
@@ -41,7 +44,7 @@ public:
   virtual void notifyBattStateAnyChange();
   virtual float readBattVoltageSenseFactor();
 
-  virtual unsigned int readRawBattSenseValue()            = 0;
+  virtual unsigned int readRawBattSenseValue() = 0;
 
   virtual float getVAdcFullrange()
   {
@@ -111,7 +114,7 @@ public:
   const char* getCurrentStateName();
   const char* getPreviousStateName();
 
-  DbgTrace_Port* trPort();
+//  DbgTrace_Port* trPort();
 
   /**
    * Notify Battery Voltage Sense Factor has changed in the Inventory Management Data.
