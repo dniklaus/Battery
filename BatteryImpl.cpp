@@ -201,10 +201,10 @@ const char* BatteryImpl::getPreviousStateName()
   return m_evalFsm->previousState()->toString();
 }
 
-DbgTrace_Port* BatteryImpl::trPort()
-{
-  return m_trPort;
-}
+//DbgTrace_Port* BatteryImpl::trPort()
+//{
+//  return m_trPort;
+//}
 
 float BatteryImpl::battWarnThreshd()
 {
