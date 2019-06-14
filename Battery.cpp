@@ -23,10 +23,10 @@ BatteryAdapter::BatteryAdapter()
 void BatteryAdapter::attachBattery(Battery* battery)
 {
   m_battery = battery;
-  if (0 != m_battery)
-  {
-    m_trPort = m_battery->trPort();
-  }
+//  if (0 != m_battery)
+//  {
+//    m_trPort = m_battery->trPort();
+//  }
 }
 
 Battery* BatteryAdapter::battery()
