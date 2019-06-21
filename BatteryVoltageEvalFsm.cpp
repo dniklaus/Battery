@@ -12,8 +12,8 @@
 BatteryVoltageEvalFsm::BatteryVoltageEvalFsm(BatteryImpl* battImpl)
 : m_battImpl(battImpl)
 , m_adapter(battImpl->adapter())
-, m_state(BatteryVoltageEvalFsmState_BattOk::Instance())
-, m_previousState(BatteryVoltageEvalFsmState_BattOk::Instance())
+, m_state(BatteryVoltageEvalFsmState_BattUnknown::Instance())
+, m_previousState(BatteryVoltageEvalFsmState_BattUnknown::Instance())
 { }
 
 BatteryVoltageEvalFsm::~BatteryVoltageEvalFsm()
@@ -149,6 +149,50 @@ bool BatteryVoltageEvalFsm::isGuardShutPlusHyst()
   }
   return isGuard;
 }
+
+//-----------------------------------------------------------------------------
+
+BatteryVoltageEvalFsmState* BatteryVoltageEvalFsmState_BattUnknown::s_instance = 0;
+
+BatteryVoltageEvalFsmState* BatteryVoltageEvalFsmState_BattUnknown::Instance()
+{
+  if (0 == s_instance)
+  {
+    s_instance = new BatteryVoltageEvalFsmState_BattUnknown();
+  }
+  return s_instance;
+}
+
+const char* BatteryVoltageEvalFsmState_BattUnknown::toString()
+{
+  return "BattUnknown";
+}
+
+void BatteryVoltageEvalFsmState_BattUnknown::evaluateState(BatteryVoltageEvalFsm* fsm)
+{
+  if (0 != fsm)
+  {
+    if (fsm->isGuardWarnPlusHyst())
+    {
+      fsm->changeState(BatteryVoltageEvalFsmState_BattOk::Instance());
+    }
+    else if (fsm->isGuardWarn())
+    {
+      fsm->changeState(BatteryVoltageEvalFsmState_BattVoltageBelowWarn::Instance());
+    }
+    else if (fsm->isGuardStop())
+    {
+      fsm->changeState(BatteryVoltageEvalFsmState_BattVoltageBelowStop::Instance());
+    }
+    else if (fsm->isGuardShut())
+    {
+      fsm->changeState(BatteryVoltageEvalFsmState_BattVoltageBelowShutdown::Instance());
+    }
+  }
+}
+
+void BatteryVoltageEvalFsmState_BattUnknown::entry(BatteryVoltageEvalFsm* fsm)
+{ }
 
 //-----------------------------------------------------------------------------
 
@@ -294,6 +338,10 @@ void BatteryVoltageEvalFsmState_BattVoltageBelowShutdown::evaluateState(BatteryV
     if (fsm->isGuardShutPlusHyst())
     {
       fsm->changeState(BatteryVoltageEvalFsmState_BattVoltageBelowWarn::Instance());
+    }
+    else
+    {
+      fsm->changeState(BatteryVoltageEvalFsmState_BattVoltageBelowShutdown::Instance());
     }
   }
 }
