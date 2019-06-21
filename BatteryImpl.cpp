@@ -37,13 +37,13 @@ public:
 
 //-----------------------------------------------------------------------------
 
-class BattPollTimerAdapter : public TimerAdapter
+class BattStatusEvalTimerAdapter : public TimerAdapter
 {
 private:
   BatteryImpl* m_battImpl;
 
 public:
-  BattPollTimerAdapter(BatteryImpl* battImpl)
+  BattStatusEvalTimerAdapter(BatteryImpl* battImpl)
   : m_battImpl(battImpl)
   { }
 
@@ -61,12 +61,14 @@ public:
 
 const unsigned int BatteryImpl::s_DEFAULT_STARTUP_TIME = 500;
 const unsigned int BatteryImpl::s_DEFAULT_POLL_TIME = 5000;
+const unsigned int BatteryImpl::s_DEFAULT_ASYNC_STATUS_EVAL_TIME = 1;
 
 BatteryImpl::BatteryImpl(BatteryAdapter* adapter, BatteryThresholdConfig batteryThresholdConfig)
 : m_adapter(adapter)
 , m_evalFsm(new BatteryVoltageEvalFsm(this))
 , m_startupTimer(new Timer(new BattStartupTimerAdapter(this), Timer::IS_NON_RECURRING, s_DEFAULT_STARTUP_TIME))
-, m_pollTimer(new Timer(new BattPollTimerAdapter(this), Timer::IS_RECURRING))
+, m_pollTimer(new Timer(new BattStatusEvalTimerAdapter(this), Timer::IS_RECURRING))
+, m_evalStatusTimer(new Timer(m_pollTimer->adapter(), Timer::IS_NON_RECURRING))   // re-use the same BattStatusEvalTimerAdapter object
 //, m_trPort(new DbgTrace_Port("batt", DbgTrace_Level::notice))
 , m_batteryVoltage(0.0)
 , m_battVoltageSenseFactor(2.0)
@@ -78,6 +80,9 @@ BatteryImpl::BatteryImpl(BatteryAdapter* adapter, BatteryThresholdConfig battery
 
 BatteryImpl::~BatteryImpl()
 {
+  delete m_evalStatusTimer;
+  m_evalStatusTimer = 0;
+
   delete m_pollTimer->adapter();
   delete m_pollTimer; m_pollTimer = 0;
 
@@ -128,6 +133,11 @@ void BatteryImpl::evaluateStatus()
 //    }
     m_evalFsm->evaluateStatus();
   }
+}
+
+void BatteryImpl::evaluateStatusAsync()
+{
+  m_evalStatusTimer->startTimer(s_DEFAULT_ASYNC_STATUS_EVAL_TIME);
 }
 
 void BatteryImpl::battVoltageSensFactorChanged()

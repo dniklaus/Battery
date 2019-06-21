@@ -52,6 +52,11 @@ public:
   void evaluateStatus();
 
   /**
+   *
+   */
+  void evaluateStatusAsync();
+
+  /**
    * Notify Battery Voltage Sense Factor has changed in the Inventory Management Data.
    * The Battery component shall read the new value and adjust the signal conversion accordingly.
    */
@@ -102,6 +107,7 @@ private:
   BatteryVoltageEvalFsm* m_evalFsm;
   Timer* m_startupTimer;
   Timer* m_pollTimer;
+  Timer* m_evalStatusTimer;
 //  DbgTrace_Port* m_trPort;
 
   float m_batteryVoltage;
@@ -115,8 +121,9 @@ private:
   float m_battHyst;                  /// Battery Voltage Hysteresis around Threshold levels [V]
 
 
-  static const unsigned int s_DEFAULT_STARTUP_TIME; /// [ms]
-  static const unsigned int s_DEFAULT_POLL_TIME;    /// [ms]
+  static const unsigned int s_DEFAULT_STARTUP_TIME;           /// startup timer time[ms]
+  static const unsigned int s_DEFAULT_POLL_TIME;              /// status poll interval [ms]
+  static const unsigned int s_DEFAULT_ASYNC_STATUS_EVAL_TIME; /// asynchronous status eval time [ms]
 
 private: // forbidden default functions
   BatteryImpl& operator = (const BatteryImpl& src); // assignment operator

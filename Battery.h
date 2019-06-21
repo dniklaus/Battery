@@ -152,6 +152,11 @@ public:
    */
   bool isBattVoltageBelowShutdownThreshold();
 
+  /**
+   * Evaluate Battery state, execute asynchrounously (detached from the caller)
+   */
+  void evaluateBatteryStateAsync();
+
   static const float s_BATT_WARN_THRSHD;            /// default Battery Voltage Warn Threshold [V]
   static const float s_BATT_STOP_THRSHD;            /// default Battery Voltage Stop Actors Threshold [V]
   static const float s_BATT_SHUT_THRSHD;            /// default Battery Voltage Shutdown Threshold [V]

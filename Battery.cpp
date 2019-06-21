@@ -202,6 +202,15 @@ bool Battery::isBattVoltageBelowShutdownThreshold()
   return isVoltageBelowShutdownThreshold;
 }
 
+void Battery::evaluateBatteryStateAsync()
+{
+  if (0 != m_impl)
+  {
+    m_impl->evaluateStatusAsync();
+  }
+}
+
+
 //DbgTrace_Port* Battery::trPort()
 //{
 //  DbgTrace_Port* trPort = 0;
