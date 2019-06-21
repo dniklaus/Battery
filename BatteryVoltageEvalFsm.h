@@ -52,7 +52,7 @@ public:
 
 private:
   friend class BatteryVoltageEvalFsmState_BattOk;
-  friend class BatteryVoltageEvalFsmState_BattNotOk;
+  friend class BatteryVoltageEvalFsmState_BattUnknown;
   friend class BatteryVoltageEvalFsmState_BattVoltageBelowWarn;
   friend class BatteryVoltageEvalFsmState_BattVoltageBelowStop;
   friend class BatteryVoltageEvalFsmState_BattVoltageBelowShutdown;
@@ -95,6 +95,32 @@ public:
 private: // forbidden default functions
   BatteryVoltageEvalFsmState& operator = (const BatteryVoltageEvalFsmState& src); // assignment operator
   BatteryVoltageEvalFsmState(const BatteryVoltageEvalFsmState& src);              // copy constructor
+};
+
+//-----------------------------------------------------------------------------
+
+class BatteryVoltageEvalFsmState_BattUnknown : public BatteryVoltageEvalFsmState
+{
+private:
+  BatteryVoltageEvalFsmState_BattUnknown() { }
+
+public:
+  static BatteryVoltageEvalFsmState* Instance();
+
+  virtual ~BatteryVoltageEvalFsmState_BattUnknown() { }
+
+  virtual void evaluateState(BatteryVoltageEvalFsm* fsm);
+
+  virtual void entry(BatteryVoltageEvalFsm* fsm);
+
+  virtual const char* toString();
+
+private:
+  static BatteryVoltageEvalFsmState* s_instance;
+
+private: // forbidden default functions
+  BatteryVoltageEvalFsmState_BattUnknown& operator = (const BatteryVoltageEvalFsmState_BattUnknown& src); // assignment operator
+  BatteryVoltageEvalFsmState_BattUnknown(const BatteryVoltageEvalFsmState_BattUnknown& src);              // copy constructor
 };
 
 //-----------------------------------------------------------------------------

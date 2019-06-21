@@ -112,6 +112,7 @@ void BatteryImpl::startup()
   {
     m_battVoltageSenseFactor = m_adapter->readBattVoltageSenseFactor();
   }
+  evaluateStatusAsync();
   m_pollTimer->startTimer(s_DEFAULT_POLL_TIME);
 }
 
