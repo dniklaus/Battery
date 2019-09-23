@@ -10,7 +10,6 @@
 
 //-----------------------------------------------------------------------------
 
-//class DbgTrace_Port;
 class Battery;
 
 class BatteryAdapter
@@ -30,11 +29,10 @@ private:
   const unsigned int s_N_ADC_FULLRANGE = 1023;
 #else
   const float s_V_ADC_FULLRANGE = 3.1;
-  const unsigned int s_N_ADC_FULLRANGE = 4096;
+  const unsigned int s_N_ADC_FULLRANGE = 4095;
 #endif
 
   Battery* m_battery;
-//  DbgTrace_Port* m_trPort;
 
 public:
   virtual void notifyBattVoltageOk();
@@ -114,8 +112,6 @@ public:
   const char* getCurrentStateName();
   const char* getPreviousStateName();
 
-//  DbgTrace_Port* trPort();
-
   /**
    * Notify Battery Voltage Sense Factor has changed in the Inventory Management Data.
    * The Battery component shall read the new value and adjust the signal conversion accordingly.
@@ -153,7 +149,7 @@ public:
   bool isBattVoltageBelowShutdownThreshold();
 
   /**
-   * Evaluate Battery state, execute asynchrounously (detached from the caller)
+   * Evaluate Battery state, execute asynchronously (detached from the caller)
    */
   void evaluateBatteryStateAsync();
 

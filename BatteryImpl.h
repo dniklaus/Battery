@@ -13,7 +13,6 @@
 class Timer;
 class BatteryAdapter;
 class BatteryVoltageEvalFsm;
-//class DbgTrace_Port;
 
 class BatteryImpl
 {
@@ -47,12 +46,12 @@ public:
   void startup();
 
   /**
-   *
+   * Read battery voltage and evaluate battery status.
    */
   void evaluateStatus();
 
   /**
-   *
+   * Read battery voltage and evaluate battery status, execute asynchronously (detached from the caller)
    */
   void evaluateStatusAsync();
 
@@ -95,8 +94,6 @@ public:
   const char* getCurrentStateName();
   const char* getPreviousStateName();
 
-//  DbgTrace_Port* trPort();
-
   float battWarnThreshd();           /// Battery Voltage Warn Threshold [V]
   float battStopThrshd();            /// Battery Voltage Stop Actors Threshold[V]
   float battShutThrshd();            /// Battery Voltage Shutdown Threshold[V]
@@ -108,7 +105,6 @@ private:
   Timer* m_startupTimer;
   Timer* m_pollTimer;
   Timer* m_evalStatusTimer;
-//  DbgTrace_Port* m_trPort;
 
   float m_batteryVoltage;
   float m_battVoltageSenseFactor;
