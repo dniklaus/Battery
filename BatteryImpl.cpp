@@ -5,14 +5,14 @@
  *      Author: niklausd
  */
 
-#include "Timer.h"
+#include "SpinTimer.h"
 #include "Battery.h"
 #include "BatteryVoltageEvalFsm.h"
 #include "BatteryImpl.h"
 
 //-----------------------------------------------------------------------------
 
-class BattStartupTimerAdapter : public TimerAdapter
+class BattStartupTimerAdapter : public SpinTimerAdapter
 {
 private:
   BatteryImpl* m_battImpl;
@@ -33,7 +33,7 @@ public:
 
 //-----------------------------------------------------------------------------
 
-class BattStatusEvalTimerAdapter : public TimerAdapter
+class BattStatusEvalTimerAdapter : public SpinTimerAdapter
 {
 private:
   BatteryImpl* m_battImpl;
@@ -61,9 +61,9 @@ const unsigned int BatteryImpl::s_DEFAULT_ASYNC_STATUS_EVAL_TIME = 0;
 BatteryImpl::BatteryImpl(BatteryAdapter* adapter, BatteryThresholdConfig batteryThresholdConfig)
 : m_adapter(adapter)
 , m_evalFsm(new BatteryVoltageEvalFsm(this))
-, m_startupTimer(new Timer(new BattStartupTimerAdapter(this), Timer::IS_NON_RECURRING, s_DEFAULT_STARTUP_TIME))
-, m_pollTimer(new Timer(new BattStatusEvalTimerAdapter(this), Timer::IS_RECURRING))
-, m_evalStatusTimer(new Timer(m_pollTimer->adapter(), Timer::IS_NON_RECURRING))   // re-use the same BattStatusEvalTimerAdapter object
+, m_startupTimer(new SpinTimer(new BattStartupTimerAdapter(this), SpinTimer::IS_NON_RECURRING, s_DEFAULT_STARTUP_TIME))
+, m_pollTimer(new SpinTimer(new BattStatusEvalTimerAdapter(this), SpinTimer::IS_RECURRING))
+, m_evalStatusTimer(new SpinTimer(m_pollTimer->adapter(), SpinTimer::IS_NON_RECURRING))   // re-use the same BattStatusEvalTimerAdapter object
 , m_batteryVoltage(0.0)
 , m_battVoltageSenseFactor(2.0)
 , m_battWarnThreshd(batteryThresholdConfig.battWarnThreshd)
