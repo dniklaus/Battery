@@ -10,7 +10,7 @@
 
 #include "Battery.h"
 
-class Timer;
+class SpinTimer;
 class BatteryAdapter;
 class BatteryVoltageEvalFsm;
 
@@ -102,9 +102,9 @@ public:
 private:
   BatteryAdapter* m_adapter;  /// Pointer to the currently attached specific BatteryAdapter object
   BatteryVoltageEvalFsm* m_evalFsm;
-  Timer* m_startupTimer;
-  Timer* m_pollTimer;
-  Timer* m_evalStatusTimer;
+  SpinTimer* m_startupTimer;
+  SpinTimer* m_pollTimer;
+  SpinTimer* m_evalStatusTimer;
 
   float m_batteryVoltage;
   float m_battVoltageSenseFactor;
