@@ -12,13 +12,13 @@
 
 //-----------------------------------------------------------------------------
 
-class BattStartupTimerAdapter : public SpinTimerAdapter
+class BattStartupTimerAction : public SpinTimerAction
 {
 private:
   BatteryImpl* m_battImpl;
 
 public:
-  BattStartupTimerAdapter(BatteryImpl* battImpl)
+  BattStartupTimerAction(BatteryImpl* battImpl)
   : m_battImpl(battImpl)
   { }
 
@@ -33,13 +33,13 @@ public:
 
 //-----------------------------------------------------------------------------
 
-class BattStatusEvalTimerAdapter : public SpinTimerAdapter
+class BattStatusEvalTimerAction : public SpinTimerAction
 {
 private:
   BatteryImpl* m_battImpl;
 
 public:
-  BattStatusEvalTimerAdapter(BatteryImpl* battImpl)
+  BattStatusEvalTimerAction(BatteryImpl* battImpl)
   : m_battImpl(battImpl)
   { }
 
@@ -61,9 +61,9 @@ const unsigned int BatteryImpl::s_DEFAULT_ASYNC_STATUS_EVAL_TIME = 0;
 BatteryImpl::BatteryImpl(BatteryAdapter* adapter, BatteryThresholdConfig batteryThresholdConfig)
 : m_adapter(adapter)
 , m_evalFsm(new BatteryVoltageEvalFsm(this))
-, m_startupTimer(new SpinTimer(new BattStartupTimerAdapter(this), SpinTimer::IS_NON_RECURRING, s_DEFAULT_STARTUP_TIME))
-, m_pollTimer(new SpinTimer(new BattStatusEvalTimerAdapter(this), SpinTimer::IS_RECURRING))
-, m_evalStatusTimer(new SpinTimer(m_pollTimer->adapter(), SpinTimer::IS_NON_RECURRING))   // re-use the same BattStatusEvalTimerAdapter object
+, m_startupTimer(new SpinTimer(s_DEFAULT_STARTUP_TIME, new BattStartupTimerAction(this), SpinTimer::IS_NON_RECURRING, SpinTimer::IS_AUTOSTART))
+, m_pollTimer(new SpinTimer(s_DEFAULT_POLL_TIME, new BattStatusEvalTimerAction(this), SpinTimer::IS_RECURRING, SpinTimer::IS_NON_AUTOSTART))
+, m_evalStatusTimer(new SpinTimer(s_DEFAULT_ASYNC_STATUS_EVAL_TIME, m_pollTimer->action(), SpinTimer::IS_NON_RECURRING, SpinTimer::IS_NON_AUTOSTART))   // re-use the same BattStatusEvalTimerAdapter object
 , m_batteryVoltage(0.0)
 , m_battVoltageSenseFactor(2.0)
 , m_battWarnThreshd(batteryThresholdConfig.battWarnThreshd)
@@ -77,10 +77,10 @@ BatteryImpl::~BatteryImpl()
   delete m_evalStatusTimer;
   m_evalStatusTimer = 0;
 
-  delete m_pollTimer->adapter();
+  delete m_pollTimer->action();
   delete m_pollTimer; m_pollTimer = 0;
 
-  delete m_startupTimer->adapter();
+  delete m_startupTimer->action();
   delete m_startupTimer; m_startupTimer = 0;
 
   delete m_evalFsm;
@@ -107,7 +107,7 @@ void BatteryImpl::startup()
     m_battVoltageSenseFactor = m_adapter->readBattVoltageSenseFactor();
   }
   evaluateStatusAsync();
-  m_pollTimer->startTimer(s_DEFAULT_POLL_TIME);
+  m_pollTimer->start(s_DEFAULT_POLL_TIME);
 }
 
 void BatteryImpl::evaluateStatus()
@@ -121,7 +121,7 @@ void BatteryImpl::evaluateStatus()
 
 void BatteryImpl::evaluateStatusAsync()
 {
-  m_evalStatusTimer->startTimer(s_DEFAULT_ASYNC_STATUS_EVAL_TIME);
+  m_evalStatusTimer->start(s_DEFAULT_ASYNC_STATUS_EVAL_TIME);
 }
 
 void BatteryImpl::battVoltageSensFactorChanged()
